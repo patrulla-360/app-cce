@@ -1,0 +1,10 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+.cuadrado-verde {
+  width: 16px;
+  height: 16px;
+  background-color: #00B6ED; /* Tailwind green-500 */
+  border-radius: 2px; /* opcional, para esquinas levemente redondeadas */
+  box-shadow: 0 0 2px rgba(0,0,0,0.3); /* opcional, para visibilidad en el mapa */
+}
