@@ -25,8 +25,10 @@ export default function LoginPage() {
       const res = await fetch(
   `https://apis-cce-all-main-997103170342.us-east1.run.app/api/usuario/${dni}`,
   {
-    credentials: "include",   // ← necesario para que el navegador acepte los Set-Cookie cross-site
-  }
+  method: 'GET',
+  credentials: 'include',   // OBLIGATORIO para que iOS acepte Set-Cookie cross-site
+  headers: { 'Accept': 'application/json' }
+}
 );
 
       if (!res.ok) {
@@ -40,15 +42,9 @@ export default function LoginPage() {
         throw new Error("Usuario inhabilitado");
       }
 
-      Cookies.set("rol", data.rol, { path: "/", sameSite: "Strict", secure: true });
-      Cookies.set("dni", data.dni, { path: "/", sameSite: "Strict", secure: true });
-      Cookies.set("nombre_usuario", data.nombre_usuario, { path: "/", sameSite: "Strict", secure: true });
-
+      
       const rol = data.rol;
-      Cookies.set("rol", rol, { path: "/", sameSite: "Strict", secure: true });
-      Cookies.set("dni", data.dni, { path: "/", sameSite: "Strict", secure: true });
-      Cookies.set("nombre_usuario", data.nombre_usuario, { path: "/", sameSite: "Strict", secure: true });
-
+     
       if (rol === "Administrador") {
         navigate("/dashboard");
       } else if (rol === "Referente") {

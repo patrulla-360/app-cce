@@ -15,6 +15,11 @@ export default function FiscalesPage() {
   useEffect(() => {
     const obtenerDatos = async () => {
       try {
+
+        fetch("https://apis-cce-all-main-.../api/_debug/cookies", { credentials: "include" })
+        .then(r => r.json()).then(console.log);
+
+
         const res = await fetch("https://apis-cce-all-main-997103170342.us-east1.run.app/api/fiscales/inicio", {
           credentials: "include",
         });
