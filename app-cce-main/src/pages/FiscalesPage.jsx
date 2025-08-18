@@ -15,7 +15,7 @@ export default function FiscalesPage() {
   useEffect(() => {
     const obtenerDatos = async () => {
       try {
-        const res = await fetch("http://localhost:4001/api/fiscales/inicio", {
+        const res = await fetch("https://apis-cce-all-main-997103170342.us-east1.run.app/api/fiscales/inicio", {
           credentials: "include",
         });
 
@@ -26,7 +26,7 @@ export default function FiscalesPage() {
         setUsuarioId(data.usuario_id);
         setMesaId(data.mesa_id);
 
-        const resPendientes = await fetch("http://localhost:4001/api/fiscales/votantes/pendientes", {
+        const resPendientes = await fetch("https://apis-cce-all-main-997103170342.us-east1.run.app/api/fiscales/votantes/pendientes", {
           credentials: "include",
         });
 
@@ -45,7 +45,7 @@ export default function FiscalesPage() {
         });
         setPersonas(adaptados);
 
-        const resVerificados = await fetch("http://localhost:4001/api/fiscales/votantes/verificados", {
+        const resVerificados = await fetch("https://apis-cce-all-main-997103170342.us-east1.run.app/api/fiscales/votantes/verificados", {
           credentials: "include",
         });
 
@@ -83,7 +83,7 @@ export default function FiscalesPage() {
     setResultadoVerificacion(null);
 
     try {
-      const response = await fetch(`http://localhost:4001/api/fiscales/verificar/${personaSeleccionada.dni}`, {
+      const response = await fetch(`https://apis-cce-all-main-997103170342.us-east1.run.app/api/fiscales/verificar/${personaSeleccionada.dni}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ usuario_id: usuarioId }),

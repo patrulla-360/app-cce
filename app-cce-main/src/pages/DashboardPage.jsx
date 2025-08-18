@@ -34,7 +34,7 @@ export default function DashboardPage() {
   const [escuelas, setEscuelas] = useState([]);
 
   useEffect(() => {
-    fetch("http://localhost:4001/api/dashboard/escuelas/ubicaciones")
+    fetch("https://apis-cce-all-main-997103170342.us-east1.run.app/api/dashboard/escuelas/ubicaciones")
       .then((res) => res.json())
       .then((data) => setEscuelas(data))
       .catch((err) => console.error("Error al cargar escuelas:", err));
@@ -46,7 +46,7 @@ const [estadoMesas, setEstadoMesas] = useState([]);
 const [loadingEstados, setLoadingEstados] = useState(true);
 
 useEffect(() => {
-  fetch("http://localhost:4001/api/dashboard/mesas/por-estado")
+  fetch("https://apis-cce-all-main-997103170342.us-east1.run.app/api/dashboard/mesas/por-estado")
     .then(res => res.json())
     .then(data => {
       const formateado = data.map(e => ({
@@ -66,7 +66,7 @@ const [asistenciaGeneral, setAsistenciaGeneral] = useState(null);
 const [loadingAsistencia, setLoadingAsistencia] = useState(true);
 
 useEffect(() => {
-  fetch("http://localhost:4001/api/dashboard/asistencia/general")
+  fetch("https://apis-cce-all-main-997103170342.us-east1.run.app/api/dashboard/asistencia/general")
     .then((res) => res.json())
     .then((data) => {
       setAsistenciaGeneral(data);
@@ -80,7 +80,7 @@ useEffect(() => {
 
 const [asistenciaHora, setAsistenciaHora] = useState([]);
 useEffect(() => {
-  fetch("http://localhost:4001/api/dashboard/asistencia/por-hora")
+  fetch("https://apis-cce-all-main-997103170342.us-east1.run.app/api/dashboard/asistencia/por-hora")
     .then((res) => res.json())
     .then((data) => {
       setAsistenciaHora(data); // ya viene formateado
@@ -116,13 +116,13 @@ const [topMesasAvance, setTopMesasAvance] = useState([]);
 const [topMesasRezago, setTopMesasRezago] = useState([]);
 
 useEffect(() => {
-  fetch("http://localhost:4001/api/dashboard/top-escuelas-avance")
+  fetch("https://apis-cce-all-main-997103170342.us-east1.run.app/api/dashboard/top-escuelas-avance")
     .then(res => res.json()).then(setTopEscuelasAvance);
-  fetch("http://localhost:4001/api/dashboard/top-escuelas-rezago")
+  fetch("https://apis-cce-all-main-997103170342.us-east1.run.app/api/dashboard/top-escuelas-rezago")
     .then(res => res.json()).then(setTopEscuelasRezago);
-  fetch("http://localhost:4001/api/dashboard/top-mesas-avance")
+  fetch("https://apis-cce-all-main-997103170342.us-east1.run.app/api/dashboard/top-mesas-avance")
     .then(res => res.json()).then(setTopMesasAvance);
-  fetch("http://localhost:4001/api/dashboard/top-mesas-rezago")
+  fetch("https://apis-cce-all-main-997103170342.us-east1.run.app/api/dashboard/top-mesas-rezago")
     .then(res => res.json()).then(setTopMesasRezago);
 }, []);
 
