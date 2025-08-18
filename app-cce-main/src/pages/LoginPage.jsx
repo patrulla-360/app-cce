@@ -22,7 +22,13 @@ export default function LoginPage() {
       const idToken = await user.getIdToken();
 
 
-      const res = await fetch(`https://apis-cce-all-main-997103170342.us-east1.run.app/api/usuario/${dni}`);
+      const res = await fetch(
+  `https://apis-cce-all-main-997103170342.us-east1.run.app/api/usuario/${dni}`,
+  {
+    credentials: "include",   // ← necesario para que el navegador acepte los Set-Cookie cross-site
+  }
+);
+
       if (!res.ok) {
         throw new Error("Usuario no registrado en la base interna");
       }

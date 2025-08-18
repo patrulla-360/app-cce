@@ -85,6 +85,7 @@ export default function FiscalesPage() {
     try {
       const response = await fetch(`https://apis-cce-all-main-997103170342.us-east1.run.app/api/fiscales/verificar/${personaSeleccionada.dni}`, {
         method: "POST",
+          credentials: "include",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ usuario_id: usuarioId }),
       });
