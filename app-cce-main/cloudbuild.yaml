@@ -3,14 +3,14 @@ steps:
 - name: 'gcr.io/cloud-builders/docker'
   args: [
     'build',
-    '-t', 'us-east1-docker.pkg.dev/iron-bedrock-467922-u0/cce-comando/apis-cce-all-main',
-    '-f', 'apis-cce-all-main/Dockerfile',
-    'apis-cce-all-main'
+    '-t', 'us-east1-docker.pkg.dev/iron-bedrock-467922-u0/cce-comando/app-cce-main',
+    '-f', 'app-cce-main/Dockerfile',
+    'app-cce-main'
   ]
 
 # Paso 2: Subir la imagen a Artifact Registry
 - name: 'gcr.io/cloud-builders/docker'
-  args: ['push', 'us-east1-docker.pkg.dev/iron-bedrock-467922-u0/cce-comando/apis-cce-all-main']
+  args: ['push', 'us-east1-docker.pkg.dev/iron-bedrock-467922-u0/cce-comando/app-cce-main']
 
 # Paso 2.1: Verificar que el repositorio existe y tiene acceso
 - name: 'gcr.io/cloud-builders/gcloud'
@@ -31,15 +31,15 @@ steps:
 - name: 'gcr.io/cloud-builders/gcloud'
   args:
     [
-      'run', 'deploy', 'apis-cce-all-main',
-      '--image', 'us-east1-docker.pkg.dev/iron-bedrock-467922-u0/cce-comando/apis-cce-all-main',
+      'run', 'deploy', 'app-cce-main',
+      '--image', 'us-east1-docker.pkg.dev/iron-bedrock-467922-u0/cce-comando/app-cce-main',
       '--region', 'us-east1',
       '--allow-unauthenticated',
       '--add-cloudsql-instances', 'iron-bedrock-467922-u0:us-east1:centro-control-electoral'
     ]
 
 images:
-- 'us-east1-docker.pkg.dev/iron-bedrock-467922-u0/cce-comando/apis-cce-all-main'
+- 'us-east1-docker.pkg.dev/iron-bedrock-467922-u0/cce-comando/app-cce-main'
 
 options:
   logging: CLOUD_LOGGING_ONLY
