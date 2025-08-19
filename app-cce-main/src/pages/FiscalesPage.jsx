@@ -1,4 +1,9 @@
 import React, { useEffect, useState } from "react";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+
+
+const auth = getAuth();
+const user = auth.currentUser;
 
 export default function FiscalesPage() {
   const [nombreFiscal, setNombreFiscal] = useState("");
@@ -14,69 +19,98 @@ export default function FiscalesPage() {
 
   useEffect(() => {
     const obtenerDatos = async () => {
-      try {
+      const auth = getAuth();
 
-        fetch("https://apis-cce-all-main-.../api/_debug/cookies", { credentials: "include" })
-        .then(r => r.json()).then(console.log);
+      onAuthStateChanged(auth, async (user) => {
+        if (!user) {
+          console.warn("⚠️ Usuario no autenticado");
+          return;
+        }
 
+        try {
+          const idToken = await user.getIdToken();
 
-        const res = await fetch("https://apis-cce-all-main-997103170342.us-east1.run.app/api/fiscales/inicio", {
-          credentials: "include",
-        });
+          // Obtener info del fiscal
+          const res = await fetch("https://apis-cce-all-main-997103170342.us-east1.run.app/api/fiscales/inicio", {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${idToken}`,
+              "Content-Type": "application/json",
+            },
+          });
 
-        if (!res.ok) throw new Error("No se pudo obtener la información del fiscal");
+          if (!res.ok) throw new Error("No se pudo obtener la información del fiscal");
 
-        const data = await res.json();
-        setNombreFiscal(data.nombre_usuario);
-        setUsuarioId(data.usuario_id);
-        setMesaId(data.mesa_id);
+          const data = await res.json();
+          setNombreFiscal(data.nombre_usuario);
+          setUsuarioId(data.usuario_id);
+          setMesaId(data.mesa_id);
 
-        const resPendientes = await fetch("https://apis-cce-all-main-997103170342.us-east1.run.app/api/fiscales/votantes/pendientes", {
-          credentials: "include",
-        });
+          // Obtener votantes pendientes
+          const resPendientes = await fetch("https://apis-cce-all-main-997103170342.us-east1.run.app/api/fiscales/votantes/pendientes", {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${idToken}`,
+              "Content-Type": "application/json",
+            },
+          });
 
-        if (!resPendientes.ok) throw new Error("No se pudieron obtener los votantes pendientes");
+          if (!resPendientes.ok) throw new Error("No se pudieron obtener los votantes pendientes");
 
-        const votantes = await resPendientes.json();
-        const adaptados = votantes.map((v) => {
-          const partes = v.nombre_apellido.split(" ");
-          return {
-            orden: v.nro_orden,
-            dni: v.dni,
-            nombre: partes[0],
-            apellido: partes.slice(1).join(" "),
-            sexo: v.sexo,
-          };
-        });
-        setPersonas(adaptados);
+          const votantes = await resPendientes.json();
+          const adaptados = votantes.map((v) => {
+            const partes = v.nombre_apellido.split(" ");
+            return {
+              orden: v.nro_orden,
+              dni: v.dni,
+              nombre: partes[0],
+              apellido: partes.slice(1).join(" "),
+              sexo: v.sexo,
+            };
+          });
+          setPersonas(adaptados);
 
-        const resVerificados = await fetch("https://apis-cce-all-main-997103170342.us-east1.run.app/api/fiscales/votantes/verificados", {
-          credentials: "include",
-        });
+          // Obtener votantes verificados
+          const resVerificados = await fetch("https://apis-cce-all-main-997103170342.us-east1.run.app/api/fiscales/votantes/verificados", {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${idToken}`,
+              "Content-Type": "application/json",
+            },
+          });
 
-        if (!resVerificados.ok) throw new Error("No se pudieron obtener los votantes verificados");
+          if (!resVerificados.ok) throw new Error("No se pudieron obtener los votantes verificados");
 
-        const dataVerificados = await resVerificados.json();
-        const adaptadosVerificados = dataVerificados.map((v) => {
-          const partes = v.nombre_apellido.split(" ");
-          return {
-            orden: v.nro_orden,
-            dni: v.dni,
-            nombre: partes[0],
-            apellido: partes.slice(1).join(" "),
-            sexo: v.sexo,
-            hora: v.hora_verificacion,
-          };
-        });
-        setVerificadas(adaptadosVerificados);
-        setCargandoInicial(false);
-      } catch (err) {
-        console.error("❌ Error general:", err);
-      }
+          const dataVerificados = await resVerificados.json();
+          const adaptadosVerificados = dataVerificados.map((v) => {
+            const partes = v.nombre_apellido.split(" ");
+            return {
+              orden: v.nro_orden,
+              dni: v.dni,
+              nombre: partes[0],
+              apellido: partes.slice(1).join(" "),
+              sexo: v.sexo,
+              hora: v.hora_verificacion,
+            };
+          });
+
+          setVerificadas(adaptadosVerificados);
+          setCargandoInicial(false);
+        } catch (err) {
+          console.error("❌ Error general:", err);
+        }
+      });
     };
 
     obtenerDatos();
   }, []);
+
+
+
+
+
+
+
 
   const filtradas = personas.filter((p) => {
     const texto = `${p.orden} ${p.dni} ${p.nombre} ${p.apellido}`.toLowerCase();

@@ -6,6 +6,7 @@ import {
 
 import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
+import DataTable from "react-data-table-component";
 
 
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
@@ -34,11 +35,18 @@ export default function DashboardPage() {
   const [escuelas, setEscuelas] = useState([]);
 
   useEffect(() => {
+  const fetchEscuelas = () => {
     fetch("https://apis-cce-all-main-997103170342.us-east1.run.app/api/dashboard/escuelas/ubicaciones")
       .then((res) => res.json())
       .then((data) => setEscuelas(data))
       .catch((err) => console.error("Error al cargar escuelas:", err));
-  }, []);
+  };
+
+  fetchEscuelas();
+  const interval = setInterval(fetchEscuelas, 60000);
+  return () => clearInterval(interval);
+}, []);
+
 
 
 
@@ -46,17 +54,23 @@ const [estadoMesas, setEstadoMesas] = useState([]);
 const [loadingEstados, setLoadingEstados] = useState(true);
 
 useEffect(() => {
-  fetch("https://apis-cce-all-main-997103170342.us-east1.run.app/api/dashboard/mesas/por-estado")
-    .then(res => res.json())
-    .then(data => {
-      const formateado = data.map(e => ({
-        name: e.estado,
-        value: e.cantidad_mesas
-      }));
-      setEstadoMesas(formateado);
-    })
-    .catch(err => console.error("Error al cargar estado de mesas:", err))
-    .finally(() => setLoadingEstados(false));
+  const fetchEstadoMesas = () => {
+    fetch("https://apis-cce-all-main-997103170342.us-east1.run.app/api/dashboard/mesas/por-estado")
+      .then(res => res.json())
+      .then(data => {
+        const formateado = data.map(e => ({
+          name: e.estado,
+          value: e.cantidad_mesas
+        }));
+        setEstadoMesas(formateado);
+      })
+      .catch(err => console.error("Error al cargar estado de mesas:", err))
+      .finally(() => setLoadingEstados(false));
+  };
+
+  fetchEstadoMesas();
+  const interval = setInterval(fetchEstadoMesas, 60000);
+  return () => clearInterval(interval);
 }, []);
 
 
@@ -64,31 +78,47 @@ useEffect(() => {
 
 const [asistenciaGeneral, setAsistenciaGeneral] = useState(null);
 const [loadingAsistencia, setLoadingAsistencia] = useState(true);
-
 useEffect(() => {
-  fetch("https://apis-cce-all-main-997103170342.us-east1.run.app/api/dashboard/asistencia/general")
-    .then((res) => res.json())
-    .then((data) => {
-      setAsistenciaGeneral(data);
-      setLoadingAsistencia(false);
-    })
-    .catch((err) => {
-      console.error("Error al cargar asistencia general:", err);
-      setLoadingAsistencia(false);
-    });
+  const fetchAsistenciaGeneral = () => {
+    fetch("https://apis-cce-all-main-997103170342.us-east1.run.app/api/dashboard/asistencia/general")
+      .then((res) => res.json())
+      .then((data) => {
+        setAsistenciaGeneral(data);
+        setLoadingAsistencia(false);
+      })
+      .catch((err) => {
+        console.error("Error al cargar asistencia general:", err);
+        setLoadingAsistencia(false);
+      });
+  };
+
+  fetchAsistenciaGeneral();
+  const interval = setInterval(fetchAsistenciaGeneral, 60000);
+  return () => clearInterval(interval);
 }, []);
+
+
+
+
 
 const [asistenciaHora, setAsistenciaHora] = useState([]);
 useEffect(() => {
-  fetch("https://apis-cce-all-main-997103170342.us-east1.run.app/api/dashboard/asistencia/por-hora")
-    .then((res) => res.json())
-    .then((data) => {
-      setAsistenciaHora(data); // ya viene formateado
-    })
-    .catch((err) => {
-      console.error("Error al cargar asistencia por hora:", err);
-    });
+  const fetchAsistenciaHora = () => {
+    fetch("https://apis-cce-all-main-997103170342.us-east1.run.app/api/dashboard/asistencia/por-hora")
+      .then((res) => res.json())
+      .then((data) => {
+        setAsistenciaHora(data); // ya viene formateado
+      })
+      .catch((err) => {
+        console.error("Error al cargar asistencia por hora:", err);
+      });
+  };
+
+  fetchAsistenciaHora();
+  const interval = setInterval(fetchAsistenciaHora, 60000);
+  return () => clearInterval(interval);
 }, []);
+
 
 function BarraAvanceItem({ nombre, porcentaje }) {
   return (
@@ -110,22 +140,58 @@ function BarraAvanceItem({ nombre, porcentaje }) {
 
 
 
-const [topEscuelasAvance, setTopEscuelasAvance] = useState([]);
-const [topEscuelasRezago, setTopEscuelasRezago] = useState([]);
-const [topMesasAvance, setTopMesasAvance] = useState([]);
-const [topMesasRezago, setTopMesasRezago] = useState([]);
+const [busqueda, setBusqueda] = useState("");
+const [pagina, setPagina] = useState(1);
+const [limite, setLimite] = useState(10);
+const [total, setTotal] = useState(0);
+const [datos, setDatos] = useState([]);
+const [cargandoTabla, setCargandoTabla] = useState(false);
+
+
+const getFirebaseToken = async () => {
+  const { getAuth } = await import("firebase/auth");
+  const auth = getAuth();
+  const user = auth.currentUser;
+  if (user) {
+    return await user.getIdToken();
+  }
+  return "";
+};
 
 useEffect(() => {
-  fetch("https://apis-cce-all-main-997103170342.us-east1.run.app/api/dashboard/top-escuelas-avance")
-    .then(res => res.json()).then(setTopEscuelasAvance);
-  fetch("https://apis-cce-all-main-997103170342.us-east1.run.app/api/dashboard/top-escuelas-rezago")
-    .then(res => res.json()).then(setTopEscuelasRezago);
-  fetch("https://apis-cce-all-main-997103170342.us-east1.run.app/api/dashboard/top-mesas-avance")
-    .then(res => res.json()).then(setTopMesasAvance);
-  fetch("https://apis-cce-all-main-997103170342.us-east1.run.app/api/dashboard/top-mesas-rezago")
-    .then(res => res.json()).then(setTopMesasRezago);
-}, []);
+  const fetchVotantes = async () => {
+    try {
+      setCargandoTabla(true);
 
+      const queryParams = new URLSearchParams({
+        q: busqueda,
+        page: pagina,
+        limit: limite,
+      });
+
+      const token = await getFirebaseToken();
+
+      const res = await fetch(`https://apis-cce-all-main-997103170342.us-east1.run.app/api/votantes/paginado?${queryParams}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (!res.ok) throw new Error("Error al obtener votantes");
+
+      const data = await res.json();
+      setDatos(data.resultados);
+      setTotal(data.total);
+    } catch (error) {
+      console.error("❌ Error al cargar votantes:", error);
+    } finally {
+      setCargandoTabla(false);
+    }
+  };
+
+  fetchVotantes();
+}, [busqueda, pagina, limite]);
 
 
   return (
@@ -136,16 +202,19 @@ useEffect(() => {
       </header>
 
 
-      <div className="flex flex-col lg:flex-row gap-6 items-stretch">
+      <div className="flex flex-col lg:flex-row gap-6 items-stretch min-h-[calc(100vh-200px)]">
+
         {/* MAPA IZQUIERDA */}
-        <div className="lg:w-1/2 bg-white p-4 rounded-xl shadow h-auto flex flex-col">
+        <div className="lg:w-1/2 bg-white p-4 rounded-xl shadow flex flex-col flex-grow">
+
           <h2 className="text-lg font-semibold mb-3">Mapa Electoral - San Miguel</h2>
           <div className="flex gap-4 mb-4 text-sm">
             <Legend color="	bg-[#00B6ED]" label="Activas" />
             <Legend color="bg-yellow-400" label="Lentas" />
             <Legend color="bg-red-500" label="Problemas" />
           </div>
-          <div className="flex-1 rounded-xl overflow-hidden min-h-[600px]">
+          <div className="rounded-xl overflow-hidden flex-grow min-h-[300px] sm:min-h-[400px]">
+
             <MapContainer
               center={[-34.5600, -58.7115]}
               zoom={12.5}
@@ -168,36 +237,12 @@ useEffect(() => {
 
         {/* MÉTRICAS DERECHA */}
         <div className="lg:w-1/2 flex flex-col gap-6">
-          {/* TOP 5 */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="bg-white  rounded-xl shadow p-4">
-              <h2 className="text-lg font-semibold text-[#00B6ED] mb-2">Top 5 Mesas Más Rápidas</h2>
-              <ul className="divide-y divide-gray-200 text-sm">
-                <li className="py-2 flex justify-between">
-                  <span className="font-medium text-gray-700">Mesa 1547 · Escuela Nº 234</span>
-                  <span className="text-[#00B6ED] font-semibold">15 min promedio</span>
-                </li>
-                <li className="py-2 flex justify-between">
-                  <span className="font-medium text-gray-700">Mesa 1789 · Escuela Nº 456</span>
-                  <span className="text-[#00B6ED] font-semibold">17 min promedio</span>
-                </li>
-              </ul>
-            </div>
+          
 
-            <div className="bg-white  rounded-xl shadow p-4">
-              <h2 className="text-lg font-semibold text-[#1E293B] mb-2"> Top 5 Mesas Más Lentas</h2>
-              <ul className="divide-y divide-gray-200 text-sm">
-                <li className="py-2 flex justify-between">
-                  <span className="font-medium text-gray-700">Mesa 0987 · Escuela Nº 12</span>
-                  <span className="text-[#1E293B] font-semibold">58 min promedio</span>
-                </li>
-                <li className="py-2 flex justify-between">
-                  <span className="font-medium text-gray-700">Mesa 0456 · Escuela Nº 123</span>
-                  <span className="text-[#1E293B] font-semibold">55 min promedio</span>
-                </li>
-              </ul>
-            </div>
-          </div>
+
+
+
+
 
 
           <div className="flex flex-col md:flex-row gap-6">
@@ -301,36 +346,51 @@ useEffect(() => {
             </div>
 
 
+{/* 🔍 Búsqueda y tabla de personas */}
+<div className="mt-10 space-y-6">
 
-{/* TOP ESCUELAS Y MESAS AVANCE */}
-<div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-10">
-  {/* ESCUELAS */}
-  <div className="bg-white p-6 rounded-xl shadow">
-    <h3 className="text-lg font-semibold text-[#1E293B] mb-4">🏫 Escuelas con más avance</h3>
-    {Array.isArray(topEscuelasAvance) && topEscuelasAvance.map((e, i) => (
-      <BarraAvanceItem key={i} nombre={e.nombre} porcentaje={e.porcentaje} />
-    ))}
+  <input
+    type="text"
+    placeholder="Buscar por DNI o nombre"
+    value={busqueda}
+    onChange={(e) => {
+      setBusqueda(e.target.value);
+      setPagina(1); // Reinicia la página
+    }}
+    className="border p-2 rounded w-full"
+  />
 
-    <h3 className="text-lg font-semibold text-[#9CA3AF] mt-6 mb-4">Escuelas con menor avance</h3>
-    {Array.isArray(topEscuelasRezago) && topEscuelasRezago.map((e, i) => (
-      <BarraAvanceItem key={i} nombre={e.nombre} porcentaje={e.porcentaje} />
-    ))}
-  </div>
+  <div className="bg-white rounded-xl shadow p-4">
+    <h2 className="text-lg font-semibold mb-4 text-[#1E293B]">Listado de Personas</h2>
+    <DataTable
+      data={datos}
+      pagination
+      paginationServer
+      paginationTotalRows={total}
+      onChangePage={(nuevaPagina) => setPagina(nuevaPagina)}
+      onChangeRowsPerPage={(nuevoLimite) => setLimite(nuevoLimite)}
+      highlightOnHover
+      progressPending={cargandoTabla}
+      columns={[
+        { name: "DNI", selector: row => row.dni, sortable: true },
+        { name: "Nombre", selector: row => row.nombre, sortable: true },
+        { name: "Apellido", selector: row => row.apellido, sortable: true },
 
-  {/* MESAS */}
-  <div className="bg-white p-6 rounded-xl shadow">
-    <h3 className="text-lg font-semibold text-[#1E293B] mb-4">🗳️ Mesas con más avance</h3>
-    {Array.isArray(topMesasAvance) && topMesasAvance.map((e, i) => (
-      <BarraAvanceItem key={i} nombre={`Mesa ${e.titulo} · ${e.escuela}`} porcentaje={e.porcentaje} />
-    ))}
 
-    <h3 className="text-lg font-semibold text-[#9CA3AF] mt-6 mb-4">Mesas con menor avance</h3>
-    {Array.isArray(topMesasRezago) && topMesasRezago.map((e, i) => (
-      <BarraAvanceItem key={i} nombre={`Mesa ${e.titulo} · ${e.escuela}`} porcentaje={e.porcentaje} />
-    ))}
+        { name: "Escuela", selector: row => row.escuela_nombre },
+        { name: "Mesa", selector: row => row.nro_mesa },
+        { name: "Asistió", selector: row => row.asistio ? "Sí" : "No" },
+        { 
+  name: "Hora", 
+  selector: row => row.fecha_asistio 
+    ? new Date(row.fecha_asistio).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) 
+    : "-" 
+},
+
+      ]}
+    />
   </div>
 </div>
-
 
 
 
