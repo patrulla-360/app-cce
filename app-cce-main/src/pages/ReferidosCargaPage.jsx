@@ -78,10 +78,7 @@ const handleCargar = async () => {
     setError("Primero verificá el DNI en el padrón.");
     return;
   }
-  if (!isDniValido(dni)) {
-    setError("Ingresá un DNI válido (solo números, al menos 7 dígitos).");
-    return;
-  }
+   
   if (!responsableSuperior) {
     setError("Seleccioná el responsable superior.");
     return;
