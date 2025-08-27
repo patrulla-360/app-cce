@@ -145,7 +145,7 @@ const handleCargar = async () => {
               <option value="">Seleccionar...</option>
               {responsables.map((r) => (
                 <option key={r.usuario_id} value={r.usuario_id}>
-                    {r.nombre} - DNI {r.dni} ({r.referencia})
+                    {r.nombre} ({r.referencia})
                     </option>
               ))}
             </select>
