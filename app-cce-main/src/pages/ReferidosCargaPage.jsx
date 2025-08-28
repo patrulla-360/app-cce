@@ -5,6 +5,7 @@ export default function OperadoresPage() {
   const [dni, setDni] = useState("");
   const [datosPadron, setDatosPadron] = useState(null);
   const [responsables, setResponsables] = useState([]);
+  const [responsableIntermedio, setResponsableIntermedio] = useState("");
   const [responsableSuperior, setResponsableSuperior] = useState("");
   const [responsableDirecto, setResponsableDirecto] = useState("");
   const [usuarioId, setUsuarioId] = useState(null);
@@ -36,6 +37,7 @@ export default function OperadoresPage() {
   setDni("");
   setDatosPadron(null);
   setResponsableSuperior("");
+    setResponsableIntermedio("");   // 👈 nuevo
   setResponsableDirecto("");
   setError(null);
 };
@@ -95,6 +97,7 @@ const handleCargar = async () => {
       body: JSON.stringify({
         dni: datosPadron.dni,                 // el normalizado de la verificación
         resp_superior_id: Number(responsableSuperior),
+        resp_intermedio: responsableIntermedio.trim(),  // 👈 nuevo en el body
         resp_directo: responsableDirecto.trim(),
         created_by: usuarioId,
       }),
@@ -148,6 +151,24 @@ const handleCargar = async () => {
             </select>
           </div>
 
+
+
+          {/* Responsable Intermedio (nuevo) */}
+          <div className="mb-4">
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Responsable intermedio
+            </label>
+            <input
+              type="text"
+              placeholder="Nombre o identificador del responsable intermedio"
+              value={responsableIntermedio}
+              onChange={(e) => setResponsableIntermedio(e.target.value)}
+              className="w-full border border-gray-300 rounded-md p-2 text-sm"
+            />
+          </div>
+
+
+
           {/* Responsable Directo */}
           <div className="mb-4">
             <label className="block text-sm font-medium text-gray-700 mb-1">Responsable directo</label>
@@ -198,7 +219,7 @@ const handleCargar = async () => {
               <button
                 onClick={handleCargar}
                 className="mt-6 bg-green-600 text-white px-6 py-2 rounded-md text-sm font-semibold hover:bg-green-700 w-full"
-                disabled={!responsableSuperior || !responsableDirecto}  // 👈 opcional: aseguremos selección
+                disabled={!responsableSuperior || !responsableIntermedio || !responsableDirecto} // 👈 opcional: aseguremos selección
               >
                 ✅ Cargar referido
               </button>
