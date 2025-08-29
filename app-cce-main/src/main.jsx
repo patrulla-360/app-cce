@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import './index.css'
 import "leaflet/dist/leaflet.css";
 import ReferidosCargaPage from './pages/ReferidosCargaPage';
+import DashboardReferidosPage from './pages/DashboardReferidosPage';
 import DashboardPage from './pages/DashboardPage'
 import LoginPage from './pages/LoginPage';
 import FiscalesPage from './pages/FiscalesPage';
@@ -40,6 +41,17 @@ ReactDOM.createRoot(document.getElementById('root')).render(
       </ProtectedRoute>
     }
   />
+
+  <Route
+    path="/referidos/dashboard"
+    element={
+      <ProtectedRoute>
+        <DashboardReferidosPage />
+      </ProtectedRoute>
+    }
+  />
+
+
 </Routes>
     </Router>
   </React.StrictMode>
