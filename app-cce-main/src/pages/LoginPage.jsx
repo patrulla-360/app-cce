@@ -49,8 +49,16 @@ export default function LoginPage() {
         navigate("/dashboard");
       } else if (rol === "Referente") {
         navigate("/inicio");
+
+
       } else if (rol === "Fiscal") {
         navigate("/fiscales");
+
+      } else if (rol === "Responsable de escuela") {
+        navigate("/responsables");
+
+
+
       } else {
         navigate("/no-autorizado");
       }

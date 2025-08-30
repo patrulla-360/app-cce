@@ -8,7 +8,9 @@ import DashboardReferidosPage from './pages/DashboardReferidosPage';
 import DashboardPage from './pages/DashboardPage'
 import LoginPage from './pages/LoginPage';
 import FiscalesPage from './pages/FiscalesPage';
+import ResponsablesPage from './pages/ResponsablesPage';
 import ProtectedRoute from './pages/ProtectedRoute';
+import ResponsablesRegistroPage from './pages/RegistroResponsablesPage';
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <Router>
@@ -50,6 +52,27 @@ ReactDOM.createRoot(document.getElementById('root')).render(
       </ProtectedRoute>
     }
   />
+
+  <Route
+    path="/responsables"
+    element={
+      <ProtectedRoute>
+        <ResponsablesPage />
+      </ProtectedRoute>
+    }
+  />
+
+
+<Route
+    path="/responsables/registro"
+    element={
+      
+        <ResponsablesRegistroPage />
+      
+    }
+  />
+
+
 
 
 </Routes>
