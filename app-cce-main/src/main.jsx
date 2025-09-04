@@ -11,6 +11,7 @@ import FiscalesPage from './pages/FiscalesPage';
 import ResponsablesPage from './pages/ResponsablesPage';
 import ProtectedRoute from './pages/ProtectedRoute';
 import ResponsablesRegistroPage from './pages/RegistroResponsablesPage';
+import  DiaVotacionPage from './pages/DiaVotacionPage';
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <Router>
@@ -73,6 +74,14 @@ ReactDOM.createRoot(document.getElementById('root')).render(
   />
 
 
+<Route
+    path="/diavotacion"
+    element={
+      
+        <DiaVotacionPage />
+      
+    }
+  />
 
 
 </Routes>
