@@ -17,7 +17,14 @@ import {
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import { divIcon } from "leaflet";
-import { Users, CheckCircle2, XCircle, Filter, Search, RefreshCw } from "lucide-react";
+
+// ✅ Reemplazo simple sin dependencia de íconos (antes: lucide-react)
+const Users = () => <span role="img" aria-label="users">👥</span>;
+const CheckCircle2 = () => <span role="img" aria-label="ok">✅</span>;
+const XCircle = () => <span role="img" aria-label="no">⛔</span>;
+const Filter = (props) => <span role="img" aria-label="filter" {...props}>🧰</span>;
+const Search = (props) => <span role="img" aria-label="search" {...props}>🔎</span>;
+const RefreshCw = (props) => <span role="img" aria-label="refresh" {...props}>🔄</span>;
 
 // ======================
 // Mock distribución
@@ -245,8 +252,7 @@ export default function DashboardVotacionPage() {
         <div className="flex flex-wrap items-center justify-between gap-3">
           <h1 className="text-lg font-semibold">📊 CCE – Dashboard de Votación (Plantilla)</h1>
           <div className="flex items-center gap-2 text-sm opacity-90">
-            <RefreshCw size={16} className="animate-spin-slow" />
-            <span>Datos de ejemplo</span>
+            <RefreshCw /> <span>Datos de ejemplo</span>
           </div>
         </div>
       </div>
@@ -254,19 +260,19 @@ export default function DashboardVotacionPage() {
       {/* KPIs */}
       <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
         <KPI
-          icon={<Users className="text-sky-500" size={20} />}
+          icon={<Users />}
           label="Total de personas"
           value={formatNumber(kpis.total)}
           hint="Suma de registrados (votaron + no)"
         />
         <KPI
-          icon={<CheckCircle2 className="text-emerald-500" size={20} />}
+          icon={<CheckCircle2 />}
           label="Votaron"
           value={formatNumber(kpis.totV)}
           hint={`${kpis.tasa.toFixed(1)}% del total`}
         />
         <KPI
-          icon={<XCircle className="text-rose-500" size={20} />}
+          icon={<XCircle />}
           label="No votaron"
           value={formatNumber(kpis.totNV)}
           hint={`${(100 - kpis.tasa).toFixed(1)}% del total`}
@@ -277,7 +283,7 @@ export default function DashboardVotacionPage() {
       <div className="mt-5 grid grid-cols-1 gap-5 xl:grid-cols-3">
         <Card title="Votaron vs No por Secretaría" subtitle="Distribución apilada por referencia">
           <div className="mb-3 flex items-center gap-2 text-sm">
-            <Filter size={16} className="text-gray-400" />
+            <Filter />
             <select
               className="rounded-md border border-gray-300 px-2 py-1 text-sm"
               value={filtroReferencia}
@@ -495,7 +501,9 @@ export default function DashboardVotacionPage() {
 
             {/* Búsqueda */}
             <div className="relative">
-              <Search className="pointer-events-none absolute left-2 top-2.5 h-4 w-4 text-gray-400" />
+              <span className="pointer-events-none absolute left-2 top-2.5 h-4 w-4">
+                <Search />
+              </span>
               <input
                 value={busqueda}
                 onChange={(e) => {
