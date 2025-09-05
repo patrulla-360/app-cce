@@ -54,11 +54,12 @@ ReactDOM.createRoot(document.getElementById('root')).render(
     }
   />
 
+
   <Route
     path="/responsables"
     element={
       <ProtectedRoute>
-        <ResponsablesPage />
+        <ResponsablesEnConstruccionPage />
       </ProtectedRoute>
     }
   />
