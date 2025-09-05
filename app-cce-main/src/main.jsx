@@ -12,6 +12,9 @@ import ResponsablesPage from './pages/ResponsablesPage';
 import ProtectedRoute from './pages/ProtectedRoute';
 import ResponsablesRegistroPage from './pages/RegistroResponsablesPage';
 import  DiaVotacionPage from './pages/DiaVotacionPage';
+import ResponsablesEnConstruccionPage  from './pages/ResponsablesEnConstruccionPage';
+
+
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <Router>
