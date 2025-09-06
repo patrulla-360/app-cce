@@ -23,7 +23,7 @@ export default function LoginPage() {
 
 
       const res = await fetch(
-  `https://apis-cce-all-main-997103170342.us-east1.run.app/api/usuario/${dni}`,
+  `http://127.0.0.1:4001/api/usuario/${dni}`,
   {
   method: 'GET',
   credentials: 'include',   // OBLIGATORIO para que iOS acepte Set-Cookie cross-site
@@ -57,6 +57,8 @@ export default function LoginPage() {
       } else if (rol === "Responsable de escuela") {
         navigate("/responsables");
 
+} else if (rol === "Responsable de carga de una escuela") {
+        navigate("/responsables/inicio");
 
 
       } else {
