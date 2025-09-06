@@ -56,7 +56,7 @@ const toggleMesa = (mesa) => {
           const idToken = await user.getIdToken();
 
           // Obtener info del fiscal
-          const resInicio = await fetch("http://127.0.0.1:4001/api/responsables/inicio", {
+          const resInicio = await fetch("https://apis-cce-all-main-997103170342.us-east1.run.app//api/responsables/inicio", {
               method: "GET",
               headers: {
                 Authorization: `Bearer ${idToken}`,
@@ -77,7 +77,7 @@ const toggleMesa = (mesa) => {
 
 
              // Obtener votantes pendientes (todas las mesas)
-              const resPendientes = await fetch("http://127.0.0.1:4001/api/responsables/votantes/pendientes", {
+              const resPendientes = await fetch("https://apis-cce-all-main-997103170342.us-east1.run.app//api/responsables/votantes/pendientes", {
                 method: "GET",
                 headers: {
                   Authorization: `Bearer ${idToken}`,
@@ -122,7 +122,7 @@ const toggleMesa = (mesa) => {
 
 
           // Obtener votantes verificados
-          const resVerificados = await fetch("http://127.0.0.1:4001/api/fiscales/votantes/verificados", {
+          const resVerificados = await fetch("https://apis-cce-all-main-997103170342.us-east1.run.app//api/fiscales/votantes/verificados", {
             method: "GET",
             headers: {
               Authorization: `Bearer ${idToken}`,
@@ -194,7 +194,7 @@ const filtradas = useMemo(() => {
     setResultadoVerificacion(null);
 
     try {
-      const response = await fetch(`http://127.0.0.1:4001/api/fiscales/verificar/${personaSeleccionada.dni}`, {
+      const response = await fetch(`https://apis-cce-all-main-997103170342.us-east1.run.app//api/fiscales/verificar/${personaSeleccionada.dni}`, {
         method: "POST",
           credentials: "include",
         headers: { "Content-Type": "application/json" },

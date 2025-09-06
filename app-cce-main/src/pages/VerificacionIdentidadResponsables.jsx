@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import logoCCE from "../assets/logo-cce.png";
 
-const API_BASE = "http://127.0.0.1:4001"; // ajustá si corresponde
+const API_BASE = "https://apis-cce-all-main-997103170342.us-east1.run.app/"; // ajustá si corresponde
 
 export default function RegistroPage() {
   const navigate = useNavigate();
