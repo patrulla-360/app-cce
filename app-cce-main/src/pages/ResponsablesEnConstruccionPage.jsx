@@ -22,14 +22,19 @@ export default function FiscalesPage() {
             </div>
 
             <h2 className="text-2xl font-bold text-slate-800 mb-2">
-              Sección temporalmente deshabilitada
+              Acceso restringido
             </h2>
+            <p className="text-slate-600 mb-4">
+              En esta sección solamente pueden ingresar los{" "}
+              <strong>Responsables de Carga</strong>.
+            </p>
             <p className="text-slate-600">
-              Estamos preparando todo para el <strong>Domingo</strong>.
+              Comunicate con tus organizadores para consultar quién tiene acceso
+              al <strong>panel de verificación del mano a mano en tu escuela asignada</strong>.
             </p>
 
             <div className="mt-6 text-xs text-slate-400">
-              Gracias por tu paciencia 🙌
+              Gracias por tu comprensión 🙌
             </div>
           </div>
         </div>

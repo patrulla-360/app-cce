@@ -8,18 +8,24 @@ import DashboardReferidosPage from './pages/DashboardReferidosPage';
 import DashboardPage from './pages/DashboardPage'
 import LoginPage from './pages/LoginPage';
 import FiscalesPage from './pages/FiscalesPage';
-import ResponsablesPage from './pages/ResponsablesPage';
+
+
 import ProtectedRoute from './pages/ProtectedRoute';
-import ResponsablesRegistroPage from './pages/RegistroResponsablesPage';
-import  DiaVotacionPage from './pages/DiaVotacionPage';
+
+import VerificacionIdentidadResponsables  from './pages/VerificacionIdentidadResponsables';
 import ResponsablesEnConstruccionPage  from './pages/ResponsablesEnConstruccionPage';
+import  DiaVotacionPage from './pages/DiaVotacionPage';
+
+import  PanelInicioResponsablesCarga from './pages/PanelInicioResponsablesCarga';
+import  ResponsablesCargaPage from './pages/ResponsablesCargaPage';
+
 
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <Router>
     <Routes>
-  <Route path="/" element={<ResponsablesEnConstruccionPage />} />
+  <Route path="/" element={<LoginPage />} />
 
   <Route
     path="/dashboard"
@@ -57,7 +63,6 @@ ReactDOM.createRoot(document.getElementById('root')).render(
     }
   />
 
-
   <Route
     path="/responsables"
     element={
@@ -72,7 +77,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
     path="/responsables/registro"
     element={
       
-        <ResponsablesEnConstruccionPage />
+        <ResponsablesEnConstruccionPage  />
       
     }
   />
@@ -86,6 +91,39 @@ ReactDOM.createRoot(document.getElementById('root')).render(
       
     }
   />
+
+
+
+<Route
+    path="/responsables/verificacion_identidad"
+    element={
+      
+        <VerificacionIdentidadResponsables />
+      
+    }
+  />
+
+
+   <Route
+    path="/responsables/inicio"
+    element={
+      <ProtectedRoute>
+        <PanelInicioResponsablesCarga/>
+      </ProtectedRoute>
+    }
+  />
+
+
+  <Route
+    path="responsables/votantes"
+    element={
+      <ProtectedRoute>
+        <ResponsablesCargaPage/>
+      </ProtectedRoute>
+    }
+  />
+
+
 
 
 </Routes>
