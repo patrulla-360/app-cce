@@ -11,7 +11,7 @@ import { divIcon } from "leaflet";
 // ======================
 // Configuración API
 // ======================
-const API_BASE = import.meta.env.VITE_API_BASE || "https://apis-cce-all-main-997103170342.us-east1.run.app/";
+const API_BASE = import.meta.env.VITE_API_BASE || "https://apis-cce-all-main-997103170342.us-east1.run.app";
 
 // ✅ Íconos simples sin dependencias externas
 const Users = () => <span role="img" aria-label="users">👥</span>;
