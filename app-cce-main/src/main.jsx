@@ -20,6 +20,7 @@ import  PanelInicioResponsablesCarga from './pages/PanelInicioResponsablesCarga'
 import  ResponsablesCargaPage from './pages/ResponsablesCargaPage';
 
 
+import  DashboardPrincipalPage from './pages/DashboardPrincipalPage.jsx';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
