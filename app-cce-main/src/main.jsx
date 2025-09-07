@@ -125,6 +125,17 @@ ReactDOM.createRoot(document.getElementById('root')).render(
 
 
 
+ <Route
+    path="/dashboard/principal"
+    element={
+      <ProtectedRoute>
+        <DashboardPrincipalPage/>
+      </ProtectedRoute>
+    }
+  />
+
+
+
 
 </Routes>
     </Router>
