@@ -2,7 +2,7 @@ import React, { useEffect, useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 
-const PANEL_ROUTE = "responsables/votantes";
+const PANEL_ROUTE = "/responsables/votantes";
 const TARGET_ISO = "2025-09-07T07:00:00-03:00";
 
 // === Config de API ===
