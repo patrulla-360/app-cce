@@ -84,15 +84,22 @@ function LegendRow() {
   );
   return (
     <div className="mb-3 flex flex-wrap gap-4">
-      <Item color="#00B6ED" label="Activas" />
+      <Item color="#22c55e" label="Rápidas" />
+      <Item color="#00B6ED" label="Normales" />
       <Item color="#f59e0b" label="Lentas" />
-      <Item color="#ef4444" label="Problemas" />
+      <Item color="#94a3b8" label="Sin datos" />
     </div>
   );
 }
 
 function iconFor(estado) {
-  const color = estado === "activa" ? "#00B6ED" : estado === "lenta" ? "#f59e0b" : "#ef4444";
+  const palette = {
+    rapida: "#22c55e",
+    normal: "#00B6ED",
+    lenta: "#f59e0b",
+    sin_datos: "#94a3b8",
+  };
+  const color = palette[estado] || "#94a3b8";
   return divIcon({
     className: "",
     html: `<span style="display:inline-block;width:14px;height:14px;border-radius:9999px;background:${color};box-shadow:0 0 0 2px #fff, 0 1px 3px rgba(0,0,0,.3)"></span>`,
@@ -100,12 +107,17 @@ function iconFor(estado) {
   });
 }
 
+function prettyEstado(s) {
+  const map = { rapida: "Rápida", normal: "Normal", lenta: "Lenta", sin_datos: "Sin datos" };
+  return map[s] ?? s ?? "Sin datos";
+}
+
 // ======================
 // Helpers de red
 // ======================
 async function fetchJSON(url, opts = {}) {
   const res = await fetch(url, {
-    cache: "no-store", // ← evita cache y refleja valor real del backend
+    cache: "no-store",
     ...opts,
     headers: { "Content-Type": "application/json", ...(opts.headers || {}) },
   });
@@ -130,7 +142,6 @@ function buildReferidosQuery({
   if (filtroIntermedio && filtroIntermedio !== "Todos") p.set("resp_intermedio", filtroIntermedio);
   if (filtroDirecto && filtroDirecto !== "Todos") p.set("resp_directo", filtroDirecto);
   if (filtroEmpleadoMuni && filtroEmpleadoMuni !== "Todos") {
-    // Si en DB es 0/1 entero, el backend debe exponer empleado_muni:int (0/1).
     const v = filtroEmpleadoMuni === "Sí" ? "1" : "0";
     p.set("empleado_muni", v);
   }
@@ -286,7 +297,7 @@ export default function DashboardVotacionPage() {
     return arr.map((r) => ({ ...r, porcentaje: totalPersonas ? (Number(r.cantidad) / totalPersonas) * 100 : 0 }));
   }, [topResponsables, totalPersonas]);
 
-  // ====== Opciones selects (derivadas de la página actual; si quieres globales, hacemos endpoints de opciones) ======
+  // ====== Opciones selects (derivadas de la página actual) ======
   const opcionesIntermedio = useMemo(
     () => ["Todos", ...Array.from(new Set((Array.isArray(tabla.items) ? tabla.items : []).map((r) => r.resp_intermedio).filter(Boolean)))],
     [tabla]
@@ -439,7 +450,7 @@ export default function DashboardVotacionPage() {
           </div>
         </Card>
 
-        <Card title="Mapa Electoral - San Miguel" subtitle="Por ahora todas Activas (preparado para estados)">
+        <Card title="Mapa Electoral - San Miguel" subtitle="Estado por avance vs promedio">
           <LegendRow />
           <div className="rounded-xl overflow-hidden min-h-[400px]">
             <CCEMap escuelas={escuelas} />
@@ -617,17 +628,27 @@ function CCEMap({ escuelas = [] }) {
       <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
       {safeEscuelas
         .filter((e) => e && e.latitud != null && e.longitud != null)
-        .map((e, i) => (
-          <Marker key={i} position={[e.latitud, e.longitud]} icon={iconFor("activa")}>
-            <Popup>
-              <div className="text-sm">
-                <strong>{e.nombre}</strong>
-                <div className="text-gray-600">{e.direccion}</div>
-                <div className="mt-1">Estado: Activa</div>
-              </div>
-            </Popup>
-          </Marker>
-        ))}
+        .map((e, i) => {
+          const faltan = (e?.cantidad_faltan ?? Math.max((e?.cantidad_votantes_total || 0) - (e?.cantidad_votaron || 0), 0));
+          const tasaPct = Number(e?.tasa_pct ?? 0).toFixed(1);
+          return (
+            <Marker key={i} position={[e.latitud, e.longitud]} icon={iconFor(e.estado)}>
+              <Popup>
+                <div className="text-sm">
+                  <strong>{e.nombre}</strong>
+                  <div className="text-gray-600">{e.direccion}</div>
+                  <div className="mt-1">Estado: <b>{prettyEstado(e.estado)}</b></div>
+                  <div className="mt-1">
+                    Votaron: <b>{formatNumber(e.cantidad_votaron)}</b> / {formatNumber(e.cantidad_votantes_total)} ({tasaPct}%)
+                  </div>
+                  <div className="mt-1">
+                    Faltan: <b>{formatNumber(faltan)}</b>
+                  </div>
+                </div>
+              </Popup>
+            </Marker>
+          );
+        })}
     </MapContainer>
   );
 }
